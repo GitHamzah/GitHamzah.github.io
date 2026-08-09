@@ -283,6 +283,13 @@
             white-space: nowrap;
         }
 
+        .marquee-set {
+            display: inline-flex;
+            gap: 48px;
+            padding-right: 48px;
+            flex-shrink: 0;
+        }
+
         .marquee-item {
             font-family: var(--display);
             font-size: 0.85rem;
@@ -293,7 +300,6 @@
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            margin-right: 48px;
             flex-shrink: 0;
         }
 
@@ -836,43 +842,39 @@
             const track = document.getElementById('marquee-track');
             if (!track) return;
 
-            // Clone items until we have enough to fill 3x viewport width
-            const originalItems = Array.from(track.children);
+            // Wrap the original items in one set we can measure and clone as a unit
+            const set = document.createElement('div');
+            set.className = 'marquee-set';
+            while (track.firstChild) set.appendChild(track.firstChild);
+            track.appendChild(set);
 
+            // Clone the set until we have enough to fill 3x viewport width
             function fillTrack() {
-                const viewportWidth = window.innerWidth;
-                while (track.scrollWidth < viewportWidth * 3) {
-                    originalItems.forEach(item => {
-                        track.appendChild(item.cloneNode(true));
-                    });
+                while (track.scrollWidth < window.innerWidth * 3 && track.children.length < 50) {
+                    track.appendChild(set.cloneNode(true));
                 }
             }
 
-            document.fonts.ready.then(() => {
-                fillTrack();
-                setWidth = getSetWidth();
-            });
+            // One exact measurement of the rendered set, gaps and padding included
+            function measureSet() {
+                return track.querySelector('.marquee-set').getBoundingClientRect().width;
+            }
+
             fillTrack();
 
             let offset = 0;
             let lastTime = performance.now();
+            let setWidth = measureSet();
             const speed = 50; // pixels per second
 
-            // Calculate width of one set of original items
-            function getSetWidth() {
-                let width = 0;
-                for (let i = 0; i < originalItems.length; i++) {
-                    const item = track.children[i];
-                    if (item) width += item.getBoundingClientRect().width + 48; // 48 = margin-right
-                }
-                return width;
-            }
-
-            let setWidth = getSetWidth();
+            document.fonts.ready.then(() => {
+                fillTrack();
+                setWidth = measureSet();
+            });
 
             window.addEventListener('resize', () => {
                 fillTrack();
-                setWidth = getSetWidth();
+                setWidth = measureSet();
             });
 
             function animate(now) {
