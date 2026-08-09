@@ -280,9 +280,15 @@
 
         .marquee-track {
             display: flex;
+            width: fit-content;
+            animation: marquee 25s linear infinite;
+        }
+
+        .marquee-group {
+            display: flex;
             gap: 48px;
-            animation: marquee 30s linear infinite;
-            width: max-content;
+            padding-right: 48px;
+            flex-shrink: 0;
         }
 
         .marquee-item {
@@ -308,7 +314,7 @@
 
         @keyframes marquee {
             from { transform: translateX(0); }
-            to { transform: translateX(calc(-50% - 24px)); }
+            to { transform: translateX(-50%); }
         }
 
         /* Sections */
@@ -679,30 +685,34 @@
     <!-- Marquee -->
     <div class="marquee-section">
         <div class="marquee-track">
-            <div class="marquee-item"><span></span>Python</div>
-            <div class="marquee-item"><span></span>SQL Server</div>
-            <div class="marquee-item"><span></span>Power BI</div>
-            <div class="marquee-item"><span></span>dbt</div>
-            <div class="marquee-item"><span></span>FastAPI</div>
-            <div class="marquee-item"><span></span>DAX</div>
-            <div class="marquee-item"><span></span>Docker</div>
-            <div class="marquee-item"><span></span>Streamlit</div>
-            <div class="marquee-item"><span></span>Postgres</div>
-            <div class="marquee-item"><span></span>Git</div>
-            <div class="marquee-item"><span></span>Linux</div>
-            <div class="marquee-item"><span></span>Dimensional Modeling</div>
-            <div class="marquee-item"><span></span>Python</div>
-            <div class="marquee-item"><span></span>SQL Server</div>
-            <div class="marquee-item"><span></span>Power BI</div>
-            <div class="marquee-item"><span></span>dbt</div>
-            <div class="marquee-item"><span></span>FastAPI</div>
-            <div class="marquee-item"><span></span>DAX</div>
-            <div class="marquee-item"><span></span>Docker</div>
-            <div class="marquee-item"><span></span>Streamlit</div>
-            <div class="marquee-item"><span></span>Postgres</div>
-            <div class="marquee-item"><span></span>Git</div>
-            <div class="marquee-item"><span></span>Linux</div>
-            <div class="marquee-item"><span></span>Dimensional Modeling</div>
+            <div class="marquee-group">
+                <div class="marquee-item"><span></span>Python</div>
+                <div class="marquee-item"><span></span>SQL Server</div>
+                <div class="marquee-item"><span></span>Power BI</div>
+                <div class="marquee-item"><span></span>dbt</div>
+                <div class="marquee-item"><span></span>FastAPI</div>
+                <div class="marquee-item"><span></span>DAX</div>
+                <div class="marquee-item"><span></span>Docker</div>
+                <div class="marquee-item"><span></span>Streamlit</div>
+                <div class="marquee-item"><span></span>Postgres</div>
+                <div class="marquee-item"><span></span>Git</div>
+                <div class="marquee-item"><span></span>Linux</div>
+                <div class="marquee-item"><span></span>Dimensional Modeling</div>
+            </div>
+            <div class="marquee-group">
+                <div class="marquee-item"><span></span>Python</div>
+                <div class="marquee-item"><span></span>SQL Server</div>
+                <div class="marquee-item"><span></span>Power BI</div>
+                <div class="marquee-item"><span></span>dbt</div>
+                <div class="marquee-item"><span></span>FastAPI</div>
+                <div class="marquee-item"><span></span>DAX</div>
+                <div class="marquee-item"><span></span>Docker</div>
+                <div class="marquee-item"><span></span>Streamlit</div>
+                <div class="marquee-item"><span></span>Postgres</div>
+                <div class="marquee-item"><span></span>Git</div>
+                <div class="marquee-item"><span></span>Linux</div>
+                <div class="marquee-item"><span></span>Dimensional Modeling</div>
+            </div>
         </div>
     </div>
 
