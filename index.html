@@ -280,8 +280,7 @@
 
         .marquee-track {
             display: flex;
-            width: fit-content;
-            animation: marquee 25s linear infinite;
+            will-change: transform;
         }
 
         .marquee-group {
@@ -310,11 +309,6 @@
             background: var(--accent);
             border-radius: 50%;
             flex-shrink: 0;
-        }
-
-        @keyframes marquee {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
         }
 
         /* Sections */
@@ -628,7 +622,6 @@
             .reveal { opacity: 1; transform: none; transition: none; }
             .hero h1, .hero-eyebrow, .hero-desc, .hero-actions,
             .hero-headshot, .hero-headshot-placeholder { opacity: 1; animation: none; }
-            .marquee-track { animation: none; }
             .hero-bg-gradient { animation: none; }
         }
     </style>
@@ -685,20 +678,6 @@
     <!-- Marquee -->
     <div class="marquee-section">
         <div class="marquee-track">
-            <div class="marquee-group">
-                <div class="marquee-item"><span></span>Python</div>
-                <div class="marquee-item"><span></span>SQL Server</div>
-                <div class="marquee-item"><span></span>Power BI</div>
-                <div class="marquee-item"><span></span>dbt</div>
-                <div class="marquee-item"><span></span>FastAPI</div>
-                <div class="marquee-item"><span></span>DAX</div>
-                <div class="marquee-item"><span></span>Docker</div>
-                <div class="marquee-item"><span></span>Streamlit</div>
-                <div class="marquee-item"><span></span>Postgres</div>
-                <div class="marquee-item"><span></span>Git</div>
-                <div class="marquee-item"><span></span>Linux</div>
-                <div class="marquee-item"><span></span>Dimensional Modeling</div>
-            </div>
             <div class="marquee-group">
                 <div class="marquee-item"><span></span>Python</div>
                 <div class="marquee-item"><span></span>SQL Server</div>
@@ -857,6 +836,33 @@
         document.querySelectorAll('.stat-card').forEach((card, i) => {
             card.style.transitionDelay = `${i * 0.1}s`;
         });
+
+        const marqueeTrack = document.querySelector('.marquee-track');
+        const marqueeGroup = marqueeTrack && marqueeTrack.querySelector('.marquee-group');
+
+        if (marqueeGroup && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            marqueeTrack.appendChild(marqueeGroup.cloneNode(true));
+
+            const SPEED = 50;
+            let groupWidth = marqueeGroup.getBoundingClientRect().width;
+            let offset = 0;
+            let lastTime = null;
+
+            const measure = () => { groupWidth = marqueeGroup.getBoundingClientRect().width; };
+            window.addEventListener('resize', measure);
+            if (document.fonts) document.fonts.ready.then(measure);
+
+            const step = (time) => {
+                if (lastTime !== null && groupWidth > 0) {
+                    offset -= SPEED * (time - lastTime) / 1000;
+                    if (offset <= -groupWidth) offset %= groupWidth;
+                    marqueeTrack.style.transform = `translateX(${offset}px)`;
+                }
+                lastTime = time;
+                requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+        }
     </script>
 
 </body>
