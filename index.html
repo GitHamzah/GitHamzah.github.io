@@ -848,7 +848,10 @@
                 }
             }
 
-            document.fonts.ready.then(fillTrack);
+            document.fonts.ready.then(() => {
+                fillTrack();
+                setWidth = getSetWidth();
+            });
             fillTrack();
 
             let offset = 0;
@@ -860,7 +863,7 @@
                 let width = 0;
                 for (let i = 0; i < originalItems.length; i++) {
                     const item = track.children[i];
-                    if (item) width += item.offsetWidth + 48; // 48 = margin-right
+                    if (item) width += item.getBoundingClientRect().width + 48; // 48 = margin-right
                 }
                 return width;
             }
@@ -868,6 +871,7 @@
             let setWidth = getSetWidth();
 
             window.addEventListener('resize', () => {
+                fillTrack();
                 setWidth = getSetWidth();
             });
 
