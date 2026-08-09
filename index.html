@@ -280,14 +280,7 @@
 
         .marquee-track {
             display: flex;
-            will-change: transform;
-        }
-
-        .marquee-group {
-            display: flex;
-            gap: 48px;
-            padding-right: 48px;
-            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .marquee-item {
@@ -295,12 +288,13 @@
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-dim);
-            white-space: nowrap;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 12px;
+            margin-right: 48px;
+            flex-shrink: 0;
         }
 
         .marquee-item span {
@@ -677,21 +671,19 @@
 
     <!-- Marquee -->
     <div class="marquee-section">
-        <div class="marquee-track">
-            <div class="marquee-group">
-                <div class="marquee-item"><span></span>Python</div>
-                <div class="marquee-item"><span></span>SQL Server</div>
-                <div class="marquee-item"><span></span>Power BI</div>
-                <div class="marquee-item"><span></span>dbt</div>
-                <div class="marquee-item"><span></span>FastAPI</div>
-                <div class="marquee-item"><span></span>DAX</div>
-                <div class="marquee-item"><span></span>Docker</div>
-                <div class="marquee-item"><span></span>Streamlit</div>
-                <div class="marquee-item"><span></span>Postgres</div>
-                <div class="marquee-item"><span></span>Git</div>
-                <div class="marquee-item"><span></span>Linux</div>
-                <div class="marquee-item"><span></span>Dimensional Modeling</div>
-            </div>
+        <div class="marquee-track" id="marquee-track">
+            <div class="marquee-item"><span></span>Python</div>
+            <div class="marquee-item"><span></span>SQL Server</div>
+            <div class="marquee-item"><span></span>Power BI</div>
+            <div class="marquee-item"><span></span>dbt</div>
+            <div class="marquee-item"><span></span>FastAPI</div>
+            <div class="marquee-item"><span></span>DAX</div>
+            <div class="marquee-item"><span></span>Docker</div>
+            <div class="marquee-item"><span></span>Streamlit</div>
+            <div class="marquee-item"><span></span>Postgres</div>
+            <div class="marquee-item"><span></span>Git</div>
+            <div class="marquee-item"><span></span>Linux</div>
+            <div class="marquee-item"><span></span>Dimensional Modeling</div>
         </div>
     </div>
 
@@ -837,32 +829,59 @@
             card.style.transitionDelay = `${i * 0.1}s`;
         });
 
-        const marqueeTrack = document.querySelector('.marquee-track');
-        const marqueeGroup = marqueeTrack && marqueeTrack.querySelector('.marquee-group');
+        // Seamless marquee
+        (function() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-        if (marqueeGroup && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            marqueeTrack.appendChild(marqueeGroup.cloneNode(true));
+            const track = document.getElementById('marquee-track');
+            if (!track) return;
 
-            const SPEED = 50;
-            let groupWidth = marqueeGroup.getBoundingClientRect().width;
-            let offset = 0;
-            let lastTime = null;
+            // Clone items until we have enough to fill 3x viewport width
+            const originalItems = Array.from(track.children);
 
-            const measure = () => { groupWidth = marqueeGroup.getBoundingClientRect().width; };
-            window.addEventListener('resize', measure);
-            if (document.fonts) document.fonts.ready.then(measure);
-
-            const step = (time) => {
-                if (lastTime !== null && groupWidth > 0) {
-                    offset -= SPEED * (time - lastTime) / 1000;
-                    if (offset <= -groupWidth) offset %= groupWidth;
-                    marqueeTrack.style.transform = `translateX(${offset}px)`;
+            function fillTrack() {
+                const viewportWidth = window.innerWidth;
+                while (track.scrollWidth < viewportWidth * 3) {
+                    originalItems.forEach(item => {
+                        track.appendChild(item.cloneNode(true));
+                    });
                 }
-                lastTime = time;
-                requestAnimationFrame(step);
-            };
-            requestAnimationFrame(step);
-        }
+            }
+
+            document.fonts.ready.then(fillTrack);
+            fillTrack();
+
+            let offset = 0;
+            let lastTime = performance.now();
+            const speed = 50; // pixels per second
+
+            // Calculate width of one set of original items
+            function getSetWidth() {
+                let width = 0;
+                for (let i = 0; i < originalItems.length; i++) {
+                    const item = track.children[i];
+                    if (item) width += item.offsetWidth + 48; // 48 = margin-right
+                }
+                return width;
+            }
+
+            let setWidth = getSetWidth();
+
+            window.addEventListener('resize', () => {
+                setWidth = getSetWidth();
+            });
+
+            function animate(now) {
+                const delta = now - lastTime;
+                lastTime = now;
+                offset += speed * delta / 1000;
+                if (offset >= setWidth) offset -= setWidth;
+                track.style.transform = 'translateX(' + (-offset) + 'px)';
+                requestAnimationFrame(animate);
+            }
+
+            requestAnimationFrame(animate);
+        })();
     </script>
 
 </body>
