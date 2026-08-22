@@ -356,14 +356,85 @@ padding-top:5px;
 }
 .pills{display:flex;flex-wrap:wrap;gap:7px}
 .pill{
+position:relative;
 font-size:.79rem;
 color:var(--muted);
 border:1px solid var(--border);
 border-radius:100px;
 padding:5px 13px;
 transition:color .2s ease,border-color .2s ease,background .2s ease;
+cursor:grab;
+user-select:none;-webkit-user-select:none;
+touch-action:pan-y;
 }
 .pill:hover{color:var(--text);border-color:var(--accent);background:var(--accent-soft)}
+.pill.dragging{
+cursor:grabbing;
+z-index:60;
+opacity:.9;
+color:var(--text);
+border-color:var(--accent);
+background:var(--accent-soft);
+box-shadow:0 8px 26px rgba(99,102,241,.28);
+transition:none;
+}
+/* spring-ish settle back into the flow position */
+.pill.snap{transition:transform .4s cubic-bezier(.25,.46,.45,.94),box-shadow .3s ease,opacity .3s ease}
+
+.drag-hint{
+font-family:var(--mono);
+font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;
+color:var(--faint);
+margin-bottom:18px;
+}
+
+/* ---------------- CONSUMPTION LAYERS ---------------- */
+.consumed{grid-column:1 / -1;padding-top:6px;border-top:1px solid var(--border-soft);margin-top:10px}
+.consumed-h{
+font-family:var(--mono);
+font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+color:var(--dim);
+margin-bottom:16px;
+}
+.use-grid{
+display:grid;
+grid-template-columns:repeat(4,minmax(0,1fr));
+gap:12px;
+}
+.use-card{
+display:flex;gap:11px;
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:9px;
+padding:14px;
+transition:border-color .2s ease,background .2s ease;
+}
+.use-card:hover{border-color:#33333e;background:var(--surface-2)}
+.use-ico{font-size:1.05rem;line-height:1.2;flex-shrink:0}
+.use-label{
+font-size:.79rem;font-weight:500;color:var(--text);
+margin-bottom:5px;
+}
+.use-card p{
+font-size:.72rem;line-height:1.5;color:var(--muted);
+margin-bottom:9px;
+}
+.use-card a{
+font-family:var(--mono);
+font-size:.6rem;letter-spacing:.05em;
+color:var(--accent);
+transition:opacity .2s ease;
+}
+.use-card a:hover{opacity:.75}
+.use-soon{
+font-family:var(--mono);
+font-size:.6rem;letter-spacing:.05em;
+color:var(--faint);
+}
+.flag-note{
+font-size:.75rem;color:var(--dim);
+margin-top:18px;max-width:760px;
+}
 
 /* ---------------- ABOUT ---------------- */
 .about-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:52px}
@@ -423,6 +494,7 @@ color:var(--faint);
 
 /* ---------------- RESPONSIVE ---------------- */
 @media (max-width:900px){
+.use-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .flag{grid-template-columns:1fr;gap:32px}
 .about-grid{grid-template-columns:1fr;gap:34px}
 }
@@ -441,8 +513,12 @@ color:var(--faint);
 .nav-inner{padding:16px 20px}
 .mini th:nth-child(5),.mini td:nth-child(5){display:none}
 }
+@media (max-width:520px){
+.use-grid{grid-template-columns:1fr}
+}
 @media (prefers-reduced-motion:reduce){
 html{scroll-behavior:auto}
+.pill.snap{transition:none}
 .reveal{opacity:1;transform:none;transition:none}
 .dot{animation:none}
 }
@@ -488,7 +564,7 @@ development through API layers and interactive analytics.
 <div class="hero-links reveal">
 <a href="https://github.com/GitHamzah" target="_blank" rel="noopener">GitHub</a>
 <a href="https://www.linkedin.com/in/hamzahlydick/" target="_blank" rel="noopener">LinkedIn</a>
-<a href="resume.pdf">Resume</a>
+<a class="resume-link" href="resume.pdf">Resume</a>
 </div>
 </div>
 </header>
@@ -567,11 +643,61 @@ and Power BI semantic model.
 <span>94K+ records</span><span>17 API endpoints</span><span>79 dbt models</span><span>ML projections</span>
 </div>
 
-<div class="acts">
-<a href="https://fantasy-football-app-ten.vercel.app" target="_blank" rel="noopener">visit the site</a>
-<a href="https://fantasy-football-api-34ko.onrender.com/docs" target="_blank" rel="noopener">API docs</a>
-<a href="https://github.com/GitHamzah/fantasy-football-analytics" target="_blank" rel="noopener">source code</a>
 </div>
+
+<div class="consumed reveal">
+<div class="consumed-h">How it is consumed</div>
+
+<div class="use-grid">
+<div class="use-card">
+<span class="use-ico" aria-hidden="true">&#9883;&#65039;</span>
+<div>
+<div class="use-label">React / Next.js</div>
+<p>Production frontend with sortable rankings, player detail pages, and AI chat</p>
+<a href="https://fantasy-football-app-ten.vercel.app" target="_blank" rel="noopener">visit site &rarr;</a>
+</div>
+</div>
+
+<div class="use-card">
+<span class="use-ico" aria-hidden="true">&#128013;</span>
+<div>
+<div class="use-label">Streamlit</div>
+<p>Python-native analytics dashboard with projections, matchup analysis, and waiver tools</p>
+<a href="https://fantasy-football-analytics.streamlit.app" target="_blank" rel="noopener">visit site &rarr;</a>
+</div>
+</div>
+
+<div class="use-card">
+<span class="use-ico" aria-hidden="true">&#128202;</span>
+<div>
+<div class="use-label">Power BI</div>
+<p>Enterprise star schema with DAX measures, disconnected scoring dimension, and interactive reports</p>
+<span class="use-soon">coming soon</span>
+</div>
+</div>
+
+<div class="use-card">
+<span class="use-ico" aria-hidden="true">&#128225;</span>
+<div>
+<div class="use-label">FastAPI</div>
+<p>17 REST endpoints serving projections, analytics, and Gemini AI &mdash; with interactive Swagger docs</p>
+<a href="https://fantasy-football-api-34ko.onrender.com/docs" target="_blank" rel="noopener">API docs &rarr;</a>
+</div>
+</div>
+</div>
+
+<div class="acts">
+<a href="https://fantasy-football-app-ten.vercel.app" target="_blank" rel="noopener">visit the site &rarr;</a>
+<a href="https://fantasy-football-api-34ko.onrender.com/docs" target="_blank" rel="noopener">API docs &rarr;</a>
+<a href="https://github.com/GitHamzah/fantasy-football-analytics" target="_blank" rel="noopener">source code &rarr;</a>
+<a href="https://github.com/GitHamzah/fantasy-football-app" target="_blank" rel="noopener">frontend code &rarr;</a>
+</div>
+
+<p class="flag-note">
+Full data lineage and model documentation available via dbt docs (79 models,
+56 tests passing). Every layer above is live and explorable &mdash; the Power BI
+semantic model is internal, with report screenshots coming soon.
+</p>
 </div>
 </article>
 
@@ -590,6 +716,7 @@ and Power BI semantic model.
 </div>
 
 <div class="reveal">
+<div class="drag-hint">drag to pick up</div>
 <div class="tech-row">
 <div class="tech-cat">Data Engineering</div>
 <div class="pills">
@@ -699,7 +826,7 @@ data platforms. Always happy to connect.
 
 <div class="btns">
 <a class="btn" href="https://www.linkedin.com/in/hamzahlydick/" target="_blank" rel="noopener">get in touch</a>
-<a class="btn ghost" href="resume.pdf">resume.pdf</a>
+<a class="btn ghost resume-link" href="resume.pdf">resume.pdf</a>
 </div>
 
 <div class="cta-links">
@@ -715,6 +842,19 @@ data platforms. Always happy to connect.
 </footer>
 
 <script>
+// ---------------------------------------------------------------------------
+// UPDATE resumeFile WHEN RESUME CHANGES
+// ---------------------------------------------------------------------------
+const CONFIG = {
+  resumeFile: "resume.pdf?v=2"
+};
+
+// Point every resume link at the configured file, so the filename and its
+// cache-busting version live in exactly one place.
+document.querySelectorAll('.resume-link').forEach(function (link) {
+  link.href = CONFIG.resumeFile;
+});
+
 // Nav: blur + border once scrolled past the top
 (function () {
   var nav = document.getElementById('nav');
@@ -755,6 +895,83 @@ data platforms. Always happy to connect.
       var top = target.getBoundingClientRect().top + window.scrollY - 56;
       window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
     });
+  });
+})();
+
+// Draggable tech pills. Pointer events so mouse, pen and touch share one path.
+// The pill is never removed from the flow: it is only visually translated, then
+// released back to translate(0) so the row reflows on its own.
+(function () {
+  var THRESHOLD = 3; // px of movement before it counts as a drag, not a tap
+
+  document.querySelectorAll('.pill').forEach(function (pill) {
+    var startX = 0, startY = 0, dragging = false, active = false;
+
+    function onDown(e) {
+      if (e.button !== undefined && e.button !== 0) return; // primary only
+      active = true;
+      dragging = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      // Original position, kept for reference and to make the intent explicit.
+      pill.dataset.originTop = String(pill.getBoundingClientRect().top);
+      pill.classList.remove('snap');
+      // Own the gesture: pointermove/up keep arriving even outside the element.
+      if (pill.setPointerCapture) {
+        try { pill.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+      // Stop the page from scrolling mid-drag; restored on release.
+      pill.style.touchAction = 'none';
+    }
+
+    function onMove(e) {
+      if (!active) return;
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+
+      if (!dragging) {
+        if (Math.abs(dx) < THRESHOLD && Math.abs(dy) < THRESHOLD) return;
+        dragging = true;
+        pill.classList.add('dragging');
+      }
+      pill.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(1.05)';
+    }
+
+    function onUp(e) {
+      if (!active) return;
+      active = false;
+      pill.style.touchAction = '';
+      if (pill.releasePointerCapture && e.pointerId !== undefined) {
+        try { pill.releasePointerCapture(e.pointerId); } catch (err) {}
+      }
+      if (!dragging) {
+        pill.classList.remove('dragging');
+        return;
+      }
+      dragging = false;
+
+      // Spring back: keep .dragging for one frame so scale animates down too,
+      // then clear it once the transition finishes.
+      pill.classList.add('snap');
+      pill.style.transform = 'translate(0,0) scale(1)';
+      pill.classList.remove('dragging');
+
+      var done = function () {
+        pill.classList.remove('snap');
+        pill.style.transform = '';
+        pill.removeEventListener('transitionend', done);
+      };
+      pill.addEventListener('transitionend', done);
+      // Fallback in case transitionend never fires (reduced motion, etc.)
+      setTimeout(done, 500);
+    }
+
+    pill.addEventListener('pointerdown', onDown);
+    pill.addEventListener('pointermove', onMove);
+    pill.addEventListener('pointerup', onUp);
+    pill.addEventListener('pointercancel', onUp);
+    // A drag that ends over a pill should not also fire a click-through.
+    pill.addEventListener('dragstart', function (e) { e.preventDefault(); });
   });
 })();
 </script>
