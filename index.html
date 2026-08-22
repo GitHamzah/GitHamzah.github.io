@@ -20,9 +20,11 @@
 --surface-2:#191a1d;
 --border:#1e1e22;
 --border-soft:#18181b;
---text:#e8e8ed;
---muted:#8a8a9a;
---dim:#55555f;
+--text:#f1f5f9;
+--text-body:#e2e8f0;
+--muted:#94a3b8;
+--dim:#64748b;
+/* --faint is decoration only (hairlines, dots) - never text */
 --faint:#2a2a30;
 --accent:#6366f1;
 --accent-soft:rgba(99,102,241,.12);
@@ -42,7 +44,7 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 
 body{
 background:var(--bg);
-color:var(--text);
+color:var(--text-body);
 font-family:var(--body);
 font-weight:300;
 line-height:1.6;
@@ -55,6 +57,27 @@ overflow-x:hidden;
 a{color:inherit;text-decoration:none}
 
 .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+
+/* Headings sit a step brighter than body copy */
+h1,h2,h3{color:var(--text)}
+
+/* ---------------- CURSOR GLOW ---------------- */
+/* Fixed overlay behind everything. Coordinates come from clientX/clientY
+   because the element is fixed, so viewport space is the right frame. */
+.glow{
+position:fixed;
+inset:0;
+z-index:0;
+pointer-events:none;
+will-change:background;
+background:radial-gradient(800px circle at var(--mouse-x,50%) var(--mouse-y,50%),
+           rgba(99,102,241,.06),transparent 60%);
+}
+/* Content rides above the glow */
+.hero,.sec,.foot{position:relative;z-index:1}
+
+@media (pointer:coarse){.glow{display:none}}
+@media (prefers-reduced-motion:reduce){.glow{display:none}}
 
 /* ---------------- NAV ---------------- */
 .nav{
@@ -78,7 +101,7 @@ font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
 color:var(--muted);white-space:nowrap;
 }
 .nav-id b{color:var(--text);font-weight:500}
-.nav-id span{color:var(--faint);margin:0 6px}
+.nav-id span{color:var(--dim);margin:0 6px}
 .nav-links{display:flex;gap:22px;list-style:none}
 .nav-links a{
 font-family:var(--mono);
@@ -87,7 +110,7 @@ color:var(--muted);
 display:inline-flex;gap:6px;align-items:baseline;
 transition:color .2s ease;
 }
-.nav-links a i{color:var(--faint);font-style:normal;font-size:.62rem}
+.nav-links a i{color:var(--dim);font-style:normal;font-size:.62rem}
 .nav-links a:hover{color:var(--text)}
 .nav-links a:hover i{color:var(--accent)}
 
@@ -170,7 +193,7 @@ transition:color .2s ease,border-color .2s ease;
 .sec-num{
 font-family:var(--mono);
 font-size:.74rem;letter-spacing:.14em;
-color:var(--faint);
+color:var(--dim);
 }
 .sec-title{
 font-family:var(--display);
@@ -255,7 +278,7 @@ color:var(--muted);
 .mini td:nth-child(1),.mini td:nth-child(2){text-align:left}
 .mini tbody tr:last-child td{border-bottom:none}
 .mini tbody tr:hover{background:rgba(99,102,241,.05)}
-.mini .rk{color:var(--faint);font-size:.68rem}
+.mini .rk{color:var(--dim);font-size:.68rem}
 .mini .nm{color:var(--text);font-weight:400}
 .mini .ppg{color:var(--text);font-weight:500}
 .pos{
@@ -272,7 +295,7 @@ color:#0c0c0e;
 .mini-foot{
 padding:9px 16px;
 font-family:var(--mono);font-size:.55rem;letter-spacing:.06em;
-color:var(--faint);
+color:var(--dim);
 border-top:1px solid var(--border);
 }
 
@@ -313,9 +336,9 @@ display:flex;flex-wrap:wrap;
 margin-top:24px;
 font-family:var(--mono);
 font-size:.63rem;letter-spacing:.06em;
-color:var(--dim);
+color:var(--muted);
 }
-.stats span:not(:last-child)::after{content:'·';margin:0 9px;color:var(--faint)}
+.stats span:not(:last-child)::after{content:'·';margin:0 9px;color:var(--dim)}
 
 .acts{display:flex;flex-wrap:wrap;gap:22px;margin-top:28px}
 .acts a{
@@ -335,7 +358,7 @@ padding:26px;
 text-align:center;
 font-family:var(--mono);
 font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;
-color:var(--faint);
+color:var(--dim);
 }
 
 /* ---------------- TECH ---------------- */
@@ -357,6 +380,7 @@ padding-top:5px;
 .pills{display:flex;flex-wrap:wrap;gap:7px}
 .pill{
 position:relative;
+display:inline-flex;align-items:center;gap:5px;
 font-size:.79rem;
 color:var(--muted);
 border:1px solid var(--border);
@@ -370,11 +394,13 @@ transition:color .2s ease,border-color .2s ease,background .2s ease,
 will-change:transform;
 }
 .pill:hover{color:var(--text);border-color:var(--accent);background:var(--accent-soft)}
+/* line-height:1 keeps the emoji from stretching the pill */
+.pill i{font-style:normal;font-size:.82em;line-height:1;flex-shrink:0}
 
 .hover-hint{
 font-family:var(--mono);
 font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;
-color:var(--faint);
+color:var(--dim);
 margin-bottom:18px;
 }
 
@@ -419,7 +445,7 @@ transition:opacity .2s ease;
 .use-soon{
 font-family:var(--mono);
 font-size:.6rem;letter-spacing:.05em;
-color:var(--faint);
+color:var(--dim);
 }
 .flag-note{
 font-size:.75rem;color:var(--dim);
@@ -434,7 +460,7 @@ margin-top:18px;max-width:760px;
 .fact dt{
 font-family:var(--mono);
 font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
-color:var(--faint);
+color:var(--dim);
 margin-bottom:5px;
 }
 .fact dd{font-size:.85rem;color:var(--text);font-weight:400}
@@ -479,7 +505,7 @@ padding:30px 0 40px;
 .foot p{
 font-family:var(--mono);
 font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
-color:var(--faint);
+color:var(--dim);
 }
 
 /* ---------------- RESPONSIVE ---------------- */
@@ -515,6 +541,8 @@ html{scroll-behavior:auto}
 </style>
 </head>
 <body>
+
+<div class="glow" id="glow" aria-hidden="true"></div>
 
 <!-- NAV -->
 <nav class="nav" id="nav">
@@ -710,50 +738,50 @@ semantic model is internal, with report screenshots coming soon.
 <div class="tech-row">
 <div class="tech-cat">Data Engineering</div>
 <div class="pills">
-<span class="pill">Python</span><span class="pill">SQL Server</span><span class="pill">PostgreSQL</span>
-<span class="pill">dbt</span><span class="pill">FastAPI</span><span class="pill">Docker</span>
-<span class="pill">Data Pipelines</span>
+<span class="pill"><i>&#x1F40D;</i>Python</span><span class="pill"><i>&#x1F5C4;&#xFE0F;</i>SQL Server</span><span class="pill"><i>&#x1F418;</i>PostgreSQL</span>
+<span class="pill"><i>&#x2699;&#xFE0F;</i>dbt</span><span class="pill"><i>&#x26A1;</i>FastAPI</span><span class="pill"><i>&#x1F433;</i>Docker</span>
+<span class="pill"><i>&#x1F504;</i>Data Pipelines</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">Analytics &amp; BI</div>
 <div class="pills">
-<span class="pill">Power BI</span><span class="pill">DAX</span><span class="pill">Power Query</span>
-<span class="pill">Microsoft Fabric</span><span class="pill">SSAS Tabular</span><span class="pill">Streamlit</span>
+<span class="pill"><i>&#x1F4CA;</i>Power BI</span><span class="pill"><i>&#x1F4D0;</i>DAX</span><span class="pill"><i>&#x1F50D;</i>Power Query</span>
+<span class="pill"><i>&#x1FAA1;</i>Microsoft Fabric</span><span class="pill"><i>&#x1F4D1;</i>SSAS Tabular</span><span class="pill"><i>&#x1F4C8;</i>Streamlit</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">Cloud &amp; DevOps</div>
 <div class="pills">
-<span class="pill">Azure SQL</span><span class="pill">Azure DevOps</span><span class="pill">CI/CD</span>
-<span class="pill">Neon</span><span class="pill">Render</span><span class="pill">Vercel</span>
-<span class="pill">Git</span>
+<span class="pill"><i>&#x2601;&#xFE0F;</i>Azure SQL</span><span class="pill"><i>&#x1F527;</i>Azure DevOps</span><span class="pill"><i>&#x1F501;</i>CI/CD</span>
+<span class="pill"><i>&#x1F49A;</i>Neon</span><span class="pill"><i>&#x1F680;</i>Render</span><span class="pill"><i>&#x25B2;</i>Vercel</span>
+<span class="pill"><i>&#x1F4E6;</i>Git</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">Languages</div>
 <div class="pills">
-<span class="pill">Python</span><span class="pill">T-SQL</span><span class="pill">DAX</span>
-<span class="pill">JavaScript</span><span class="pill">HTML/CSS</span>
+<span class="pill"><i>&#x1F40D;</i>Python</span><span class="pill"><i>&#x1F4BE;</i>T-SQL</span><span class="pill"><i>&#x1F4D0;</i>DAX</span>
+<span class="pill"><i>&#x1F7E8;</i>JavaScript</span><span class="pill"><i>&#x1F310;</i>HTML/CSS</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">ML &amp; AI</div>
 <div class="pills">
-<span class="pill">scikit-learn</span><span class="pill">Gemini API</span><span class="pill">pandas</span>
-<span class="pill">NumPy</span>
+<span class="pill"><i>&#x1F9E0;</i>scikit-learn</span><span class="pill"><i>&#x2728;</i>Gemini API</span><span class="pill"><i>&#x1F43C;</i>pandas</span>
+<span class="pill"><i>&#x1F522;</i>NumPy</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">Tools &amp; Platforms</div>
 <div class="pills">
-<span class="pill">Dataflows Gen2</span><span class="pill">Alteryx</span><span class="pill">TM1</span>
-<span class="pill">Oracle</span><span class="pill">Workday</span><span class="pill">RLS</span>
+<span class="pill"><i>&#x1F30A;</i>Dataflows Gen2</span><span class="pill"><i>&#x1F500;</i>Alteryx</span><span class="pill"><i>&#x1F4E6;</i>TM1</span>
+<span class="pill"><i>&#x1F3DB;&#xFE0F;</i>Oracle</span><span class="pill"><i>&#x1F454;</i>Workday</span><span class="pill"><i>&#x1F512;</i>RLS</span>
 </div>
 </div>
 </div>
@@ -844,6 +872,33 @@ const CONFIG = {
 document.querySelectorAll('.resume-link').forEach(function (link) {
   link.href = CONFIG.resumeFile;
 });
+
+// Cursor glow. The overlay is position:fixed, so its gradient is resolved in
+// viewport space - clientX/clientY are the matching coordinates. Using page
+// coordinates here would make the glow drift away from the cursor on scroll.
+(function () {
+  var glow = document.getElementById('glow');
+  if (!glow) return;
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var x = 0, y = 0, queued = false;
+
+  function paint() {
+    queued = false;
+    glow.style.setProperty('--mouse-x', x + 'px');
+    glow.style.setProperty('--mouse-y', y + 'px');
+  }
+
+  document.addEventListener('mousemove', function (e) {
+    x = e.clientX;
+    y = e.clientY;
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(paint);
+    }
+  }, { passive: true });
+})();
 
 // Nav: blur + border once scrolled past the top
 (function () {
