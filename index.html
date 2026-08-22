@@ -23,7 +23,7 @@
 --text:#f1f5f9;
 --text-body:#e2e8f0;
 --muted:#94a3b8;
---dim:#64748b;
+--dim:#7c8899;
 /* --faint is decoration only (hairlines, dots) - never text */
 --faint:#2a2a30;
 --accent:#6366f1;
@@ -645,7 +645,7 @@ development through API layers and interactive analytics.
 
 <p>
 A full-stack data platform ingesting 5 seasons of NFL data through a layered
-SQL Server warehouse, transformed with dbt (79 models, 56 tests), and served
+SQL Server warehouse, transformed with dbt (22 models, 55 tests), and served
 via a FastAPI backend with ML-powered projections (MAE 2.56, R&sup2; 0.67),
 PFR advanced stats integration, schedule analysis, and an AI assistant powered
 by Google Gemini. Consumed by a React/Next.js web app, Streamlit dashboard,
@@ -660,7 +660,7 @@ and Power BI semantic model.
 </div>
 
 <div class="stats">
-<span>94K+ records</span><span>17 API endpoints</span><span>79 dbt models</span><span>ML projections</span>
+<span>94K+ records</span><span>21 API endpoints</span><span>22 dbt models</span><span>55 tests passing</span>
 </div>
 
 </div>
@@ -683,7 +683,7 @@ and Power BI semantic model.
 <div>
 <div class="use-label">Streamlit</div>
 <p>Python-native analytics dashboard with projections, matchup analysis, and waiver tools</p>
-<a href="https://fantasy-football-analytics.streamlit.app" target="_blank" rel="noopener">visit site &rarr;</a>
+<a href="https://fantasy-football-analytics-ka38qirummutmtkiz6hfmv.streamlit.app/" target="_blank" rel="noopener">visit site &rarr;</a>
 </div>
 </div>
 
@@ -700,7 +700,7 @@ and Power BI semantic model.
 <svg class="use-ico" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path fill="#009688" d="M128 0C57.33 0 0 57.33 0 128s57.33 128 128 128s128-57.33 128-128S198.67 0 128 0m-6.67 230.605v-80.288H76.699l64.128-124.922v80.288h42.966z"/></svg>
 <div>
 <div class="use-label">FastAPI</div>
-<p>17 REST endpoints serving projections, analytics, and Gemini AI &mdash; with interactive Swagger docs</p>
+<p>21 REST endpoints serving projections, analytics, and Gemini AI &mdash; with interactive Swagger docs</p>
 <a href="https://fantasy-football-api-34ko.onrender.com/docs" target="_blank" rel="noopener">API docs &rarr;</a>
 </div>
 </div>
@@ -714,8 +714,8 @@ and Power BI semantic model.
 </div>
 
 <p class="flag-note">
-Full data lineage and model documentation available via dbt docs (79 models,
-56 tests passing). Every layer above is live and explorable &mdash; the Power BI
+Full data lineage and model documentation available via dbt docs (22 models,
+55 tests passing). Every layer above is live and explorable &mdash; the Power BI
 semantic model is internal, with report screenshots coming soon.
 </p>
 </div>
