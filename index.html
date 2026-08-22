@@ -362,26 +362,16 @@ color:var(--muted);
 border:1px solid var(--border);
 border-radius:100px;
 padding:5px 13px;
-transition:color .2s ease,border-color .2s ease,background .2s ease;
-cursor:grab;
+cursor:default;
 user-select:none;-webkit-user-select:none;
-touch-action:pan-y;
+/* transform is animated too, so the magnetic push eases rather than snaps */
+transition:color .2s ease,border-color .2s ease,background .2s ease,
+           transform .3s cubic-bezier(.25,.46,.45,.94);
+will-change:transform;
 }
 .pill:hover{color:var(--text);border-color:var(--accent);background:var(--accent-soft)}
-.pill.dragging{
-cursor:grabbing;
-z-index:60;
-opacity:.9;
-color:var(--text);
-border-color:var(--accent);
-background:var(--accent-soft);
-box-shadow:0 8px 26px rgba(99,102,241,.28);
-transition:none;
-}
-/* spring-ish settle back into the flow position */
-.pill.snap{transition:transform .4s cubic-bezier(.25,.46,.45,.94),box-shadow .3s ease,opacity .3s ease}
 
-.drag-hint{
+.hover-hint{
 font-family:var(--mono);
 font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;
 color:var(--faint);
@@ -518,7 +508,7 @@ color:var(--faint);
 }
 @media (prefers-reduced-motion:reduce){
 html{scroll-behavior:auto}
-.pill.snap{transition:none}
+.pill{transition:color .2s ease,border-color .2s ease,background .2s ease}
 .reveal{opacity:1;transform:none;transition:none}
 .dot{animation:none}
 }
@@ -716,7 +706,7 @@ semantic model is internal, with report screenshots coming soon.
 </div>
 
 <div class="reveal">
-<div class="drag-hint">drag to pick up</div>
+<div class="hover-hint">hover to explore</div>
 <div class="tech-row">
 <div class="tech-cat">Data Engineering</div>
 <div class="pills">
@@ -898,81 +888,85 @@ document.querySelectorAll('.resume-link').forEach(function (link) {
   });
 })();
 
-// Draggable tech pills. Pointer events so mouse, pen and touch share one path.
-// The pill is never removed from the flow: it is only visually translated, then
-// released back to translate(0) so the row reflows on its own.
+// Magnetic tech pills. The cursor repels nearby tags: closer means a stronger
+// push, and each tag eases back to its flow position via the CSS transition.
 (function () {
-  var THRESHOLD = 3; // px of movement before it counts as a drag, not a tap
+  var section = document.getElementById('tech');
+  if (!section) return;
 
-  document.querySelectorAll('.pill').forEach(function (pill) {
-    var startX = 0, startY = 0, dragging = false, active = false;
+  var pills = Array.prototype.slice.call(section.querySelectorAll('.pill'));
+  if (!pills.length) return;
 
-    function onDown(e) {
-      if (e.button !== undefined && e.button !== 0) return; // primary only
-      active = true;
-      dragging = false;
-      startX = e.clientX;
-      startY = e.clientY;
-      // Original position, kept for reference and to make the intent explicit.
-      pill.dataset.originTop = String(pill.getBoundingClientRect().top);
-      pill.classList.remove('snap');
-      // Own the gesture: pointermove/up keep arriving even outside the element.
-      if (pill.setPointerCapture) {
-        try { pill.setPointerCapture(e.pointerId); } catch (err) {}
-      }
-      // Stop the page from scrolling mid-drag; restored on release.
-      pill.style.touchAction = 'none';
-    }
+  // Repulsion is a fine-pointer affordance. On touch there is no hover to
+  // track, so the tags simply sit still.
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    function onMove(e) {
-      if (!active) return;
-      var dx = e.clientX - startX;
-      var dy = e.clientY - startY;
+  var RADIUS = 100;   // px of influence around the cursor
+  var MAX_PUSH = 20;  // px of displacement when the cursor is right on a tag
 
-      if (!dragging) {
-        if (Math.abs(dx) < THRESHOLD && Math.abs(dy) < THRESHOLD) return;
-        dragging = true;
-        pill.classList.add('dragging');
-      }
-      pill.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(1.05)';
-    }
+  var centers = null; // measured lazily, in document space
+  var queued = false;
+  var px = 0, py = 0;
 
-    function onUp(e) {
-      if (!active) return;
-      active = false;
-      pill.style.touchAction = '';
-      if (pill.releasePointerCapture && e.pointerId !== undefined) {
-        try { pill.releasePointerCapture(e.pointerId); } catch (err) {}
-      }
-      if (!dragging) {
-        pill.classList.remove('dragging');
-        return;
-      }
-      dragging = false;
+  function clearAll() {
+    for (var i = 0; i < pills.length; i++) pills[i].style.transform = '';
+  }
 
-      // Spring back: keep .dragging for one frame so scale animates down too,
-      // then clear it once the transition finishes.
-      pill.classList.add('snap');
-      pill.style.transform = 'translate(0,0) scale(1)';
-      pill.classList.remove('dragging');
-
-      var done = function () {
-        pill.classList.remove('snap');
-        pill.style.transform = '';
-        pill.removeEventListener('transitionend', done);
+  // Centres are stored in document coordinates (rect + scroll offset) and
+  // compared against pageX/pageY, so scrolling never invalidates the cache.
+  // Measured only while untransformed, otherwise the centres would drift.
+  function measure() {
+    centers = pills.map(function (pill) {
+      var r = pill.getBoundingClientRect();
+      return {
+        x: r.left + window.scrollX + r.width / 2,
+        y: r.top + window.scrollY + r.height / 2
       };
-      pill.addEventListener('transitionend', done);
-      // Fallback in case transitionend never fires (reduced motion, etc.)
-      setTimeout(done, 500);
-    }
+    });
+  }
 
-    pill.addEventListener('pointerdown', onDown);
-    pill.addEventListener('pointermove', onMove);
-    pill.addEventListener('pointerup', onUp);
-    pill.addEventListener('pointercancel', onUp);
-    // A drag that ends over a pill should not also fire a click-through.
-    pill.addEventListener('dragstart', function (e) { e.preventDefault(); });
-  });
+  function apply() {
+    queued = false;
+    if (!centers) measure();
+
+    for (var i = 0; i < pills.length; i++) {
+      var dx = centers[i].x - px;
+      var dy = centers[i].y - py;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist >= RADIUS) {
+        pills[i].style.transform = '';
+        continue;
+      }
+      if (dist === 0) continue; // cursor dead centre: no direction to push
+
+      // Falls off linearly: touching = MAX_PUSH, half a radius away = half.
+      var push = (1 - dist / RADIUS) * MAX_PUSH;
+      var ox = (dx / dist) * push;
+      var oy = (dy / dist) * push;
+      pills[i].style.transform =
+        'translate(' + ox.toFixed(2) + 'px,' + oy.toFixed(2) + 'px)';
+    }
+  }
+
+  section.addEventListener('mousemove', function (e) {
+    px = e.pageX;
+    py = e.pageY;
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(apply);
+    }
+  }, { passive: true });
+
+  section.addEventListener('mouseleave', clearAll);
+
+  // Reflow changes the layout, so drop the cache. Clear the transforms first
+  // or the next measurement would read displaced positions.
+  window.addEventListener('resize', function () {
+    clearAll();
+    centers = null;
+  }, { passive: true });
 })();
 </script>
 
