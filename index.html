@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
 <style>
 :root{
 --bg:#0c0c0e;
@@ -380,7 +381,7 @@ padding-top:5px;
 .pills{display:flex;flex-wrap:wrap;gap:7px}
 .pill{
 position:relative;
-display:inline-flex;align-items:center;gap:5px;
+display:inline-flex;align-items:center;
 font-size:.79rem;
 color:var(--muted);
 border:1px solid var(--border);
@@ -394,8 +395,16 @@ transition:color .2s ease,border-color .2s ease,background .2s ease,
 will-change:transform;
 }
 .pill:hover{color:var(--text);border-color:var(--accent);background:var(--accent-soft)}
-/* line-height:1 keeps the emoji from stretching the pill */
-.pill i{font-style:normal;font-size:.82em;line-height:1;flex-shrink:0}
+/* line-height:1 keeps the glyph from stretching the pill */
+.pill i{
+font-style:normal;
+line-height:1;
+flex-shrink:0;
+color:inherit;
+margin-right:6px;
+}
+.pill i[class*="devicon-"]{font-size:14px}
+.pill i.emo{font-size:12px}
 
 .hover-hint{
 font-family:var(--mono);
@@ -738,50 +747,50 @@ semantic model is internal, with report screenshots coming soon.
 <div class="tech-row">
 <div class="tech-cat">Data Engineering</div>
 <div class="pills">
-<span class="pill"><i>&#x1F40D;</i>Python</span><span class="pill"><i>&#x1F5C4;&#xFE0F;</i>SQL Server</span><span class="pill"><i>&#x1F418;</i>PostgreSQL</span>
-<span class="pill"><i>&#x2699;&#xFE0F;</i>dbt</span><span class="pill"><i>&#x26A1;</i>FastAPI</span><span class="pill"><i>&#x1F433;</i>Docker</span>
-<span class="pill"><i>&#x1F504;</i>Data Pipelines</span>
+<span class="pill"><i class="devicon-python-plain" aria-hidden="true"></i>Python</span><span class="pill"><i class="devicon-microsoftsqlserver-plain" aria-hidden="true"></i>SQL Server</span><span class="pill"><i class="devicon-postgresql-plain" aria-hidden="true"></i>PostgreSQL</span>
+<span class="pill"><i class="emo" aria-hidden="true">&#x2699;&#xFE0F;</i>dbt</span><span class="pill"><i class="devicon-fastapi-plain" aria-hidden="true"></i>FastAPI</span><span class="pill"><i class="devicon-docker-plain" aria-hidden="true"></i>Docker</span>
+<span class="pill"><i class="emo" aria-hidden="true">&#x1F504;</i>Data Pipelines</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">Analytics &amp; BI</div>
 <div class="pills">
-<span class="pill"><i>&#x1F4CA;</i>Power BI</span><span class="pill"><i>&#x1F4D0;</i>DAX</span><span class="pill"><i>&#x1F50D;</i>Power Query</span>
-<span class="pill"><i>&#x1FAA1;</i>Microsoft Fabric</span><span class="pill"><i>&#x1F4D1;</i>SSAS Tabular</span><span class="pill"><i>&#x1F4C8;</i>Streamlit</span>
+<span class="pill"><i class="emo" aria-hidden="true">&#x1F4CA;</i>Power BI</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F4D0;</i>DAX</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F50D;</i>Power Query</span>
+<span class="pill"><i class="emo" aria-hidden="true">&#x1FAA1;</i>Microsoft Fabric</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F4D1;</i>SSAS Tabular</span><span class="pill"><i class="devicon-streamlit-plain" aria-hidden="true"></i>Streamlit</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">Cloud &amp; DevOps</div>
 <div class="pills">
-<span class="pill"><i>&#x2601;&#xFE0F;</i>Azure SQL</span><span class="pill"><i>&#x1F527;</i>Azure DevOps</span><span class="pill"><i>&#x1F501;</i>CI/CD</span>
-<span class="pill"><i>&#x1F49A;</i>Neon</span><span class="pill"><i>&#x1F680;</i>Render</span><span class="pill"><i>&#x25B2;</i>Vercel</span>
-<span class="pill"><i>&#x1F4E6;</i>Git</span>
+<span class="pill"><i class="devicon-azure-plain" aria-hidden="true"></i>Azure SQL</span><span class="pill"><i class="devicon-azure-plain" aria-hidden="true"></i>Azure DevOps</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F501;</i>CI/CD</span>
+<span class="pill"><i class="emo" aria-hidden="true">&#x1F49A;</i>Neon</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F680;</i>Render</span><span class="pill"><i class="devicon-vercel-plain" aria-hidden="true"></i>Vercel</span>
+<span class="pill"><i class="devicon-git-plain" aria-hidden="true"></i>Git</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">Languages</div>
 <div class="pills">
-<span class="pill"><i>&#x1F40D;</i>Python</span><span class="pill"><i>&#x1F4BE;</i>T-SQL</span><span class="pill"><i>&#x1F4D0;</i>DAX</span>
-<span class="pill"><i>&#x1F7E8;</i>JavaScript</span><span class="pill"><i>&#x1F310;</i>HTML/CSS</span>
+<span class="pill"><i class="devicon-python-plain" aria-hidden="true"></i>Python</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F4BE;</i>T-SQL</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F4D0;</i>DAX</span>
+<span class="pill"><i class="devicon-javascript-plain" aria-hidden="true"></i>JavaScript</span><span class="pill"><i class="devicon-html5-plain" aria-hidden="true"></i>HTML/CSS</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">ML &amp; AI</div>
 <div class="pills">
-<span class="pill"><i>&#x1F9E0;</i>scikit-learn</span><span class="pill"><i>&#x2728;</i>Gemini API</span><span class="pill"><i>&#x1F43C;</i>pandas</span>
-<span class="pill"><i>&#x1F522;</i>NumPy</span>
+<span class="pill"><i class="devicon-scikitlearn-plain" aria-hidden="true"></i>scikit-learn</span><span class="pill"><i class="emo" aria-hidden="true">&#x2728;</i>Gemini API</span><span class="pill"><i class="devicon-pandas-plain" aria-hidden="true"></i>pandas</span>
+<span class="pill"><i class="devicon-numpy-plain" aria-hidden="true"></i>NumPy</span>
 </div>
 </div>
 
 <div class="tech-row">
 <div class="tech-cat">Tools &amp; Platforms</div>
 <div class="pills">
-<span class="pill"><i>&#x1F30A;</i>Dataflows Gen2</span><span class="pill"><i>&#x1F500;</i>Alteryx</span><span class="pill"><i>&#x1F4E6;</i>TM1</span>
-<span class="pill"><i>&#x1F3DB;&#xFE0F;</i>Oracle</span><span class="pill"><i>&#x1F454;</i>Workday</span><span class="pill"><i>&#x1F512;</i>RLS</span>
+<span class="pill"><i class="emo" aria-hidden="true">&#x1F30A;</i>Dataflows Gen2</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F500;</i>Alteryx</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F4E6;</i>TM1</span>
+<span class="pill"><i class="devicon-oracle-plain" aria-hidden="true"></i>Oracle</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F454;</i>Workday</span><span class="pill"><i class="emo" aria-hidden="true">&#x1F512;</i>RLS</span>
 </div>
 </div>
 </div>
